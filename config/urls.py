@@ -17,10 +17,12 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path("",include("core.urls")),
 ]
 
 if settings.DEBUG:
@@ -28,3 +30,9 @@ if settings.DEBUG:
         settings.MEDIA_URL,
         document_root = settings.MEDIA_ROOT,
     )
+
+admin.site.site_header = "PES Live Auction Administration"
+
+admin.site.site_title = "PES Live Auction"
+
+admin.site.index_title = "Administration Dashboard"
