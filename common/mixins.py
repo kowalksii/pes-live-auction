@@ -14,10 +14,14 @@ class ApprovedParticipantRequiredMixin(LoginRequiredMixin):
         user = request.user
 
         if user.role != User.UserRole.PARTICIPANT:
-            raise PermissionDenied
+            raise PermissionDenied(
+                "Only approved participants can access this page."
+            )
 
         if not user.is_approved:
-            raise PermissionDenied
+            raise PermissionDenied(
+                "Your account has not been approved yet."
+            )
 
         return super().dispatch(request, *args, **kwargs)
 
@@ -30,6 +34,8 @@ class AdminRequiredMixin(LoginRequiredMixin):
     def dispatch(self, request, *args, **kwargs):
 
         if request.user.role != User.UserRole.ADMIN:
-            raise PermissionDenied
+            raise PermissionDenied(
+                "Only administrators can access this page."
+            )
 
         return super().dispatch(request, *args, **kwargs)
