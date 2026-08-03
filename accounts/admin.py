@@ -23,6 +23,11 @@ class CustomUserAdmin(UserAdmin):
         "is_superuser",
     )
 
+    actions = (
+        "approve_users",
+        "revoke_users",
+    )
+
     fieldsets = UserAdmin.fieldsets + (
         (
             "Auction Information",
@@ -35,3 +40,11 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
     )
+
+    @admin.action(description="Approve selected participants")
+    def approve_users(self, request, queryset):
+        queryset.update(is_approved=True)
+
+    @admin.action(description="Revoke selected participants")
+    def revoke_users(self, request, queryset):
+        queryset.update(is_approved=False)

@@ -12,10 +12,14 @@ class DashboardRedirectView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
 
         if request.user.role == UserRole.ADMIN:
-
             return redirect("dashboard:admin")
 
-        return redirect("dashboard:participant")
+        if request.user.role == UserRole.PARTICIPANT:
+            if not request.user.is_approved:
+                return redirect("accounts:pending_approval")
+            
+            return redirect("dashboard:participant")
+        return redirect("home")
 
 class AdminDashboardView(
     LoginRequiredMixin,

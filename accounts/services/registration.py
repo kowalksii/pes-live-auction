@@ -20,4 +20,7 @@ def register_participant(form):
 
     user.save()
 
+    if hasattr(form, "save_m2m"):
+        form.save_m2m()
+
     return user

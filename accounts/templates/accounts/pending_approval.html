@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Pending Approval{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="alert alert-warning text-center">
+
+                <h3>Account Pending Approval</h3>
+
+                <hr>
+
+                <p>
+                    Your registration was successful.
+                </p>
+
+                <p>
+                    Your account is waiting for administrator approval.
+                </p>
+
+                <p>
+                    Please contact the administrator if approval is taking longer than expected.
+                </p>
+
+                <a href="{% url 'accounts:logout' %}" class="btn btn-danger">
+                    Logout
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
