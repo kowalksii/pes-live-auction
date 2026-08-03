@@ -9,6 +9,7 @@ class TournamentStatus(models.TextChoices):
     REGISTRATION = "REGISTRATION", "Registration Open"
     AUCTION = "AUCTION", "Live Auction"
     COMPLETED = "COMPLETED", "Completed"
+    CANCELLED = "CANCELLED", "Cancelled"
 
 
 class Tournament(TimeStampedModel):
