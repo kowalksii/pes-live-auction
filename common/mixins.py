@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 
-from accounts.models import User
+from accounts.models import User, UserRole
 
 
 class ApprovedParticipantRequiredMixin(LoginRequiredMixin):
@@ -13,7 +13,7 @@ class ApprovedParticipantRequiredMixin(LoginRequiredMixin):
 
         user = request.user
 
-        if user.role != User.UserRole.PARTICIPANT:
+        if user.role != UserRole.PARTICIPANT:
             raise PermissionDenied(
                 "Only approved participants can access this page."
             )
@@ -33,7 +33,7 @@ class AdminRequiredMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
 
-        if request.user.role != User.UserRole.ADMIN:
+        if request.user.role != UserRole.ADMIN:
             raise PermissionDenied(
                 "Only administrators can access this page."
             )
