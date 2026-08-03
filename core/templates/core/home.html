@@ -2,27 +2,57 @@
 
 {% block content %}
 
-<div class="text-center mt-5">
+<div class="container py-5">
 
-    <h1 class="display-4">
+    <div class="text-center">
 
-        PES Live Auction
+        <h1 class="display-4 fw-bold">
+            PES Live Auction
+        </h1>
 
-    </h1>
+        <p class="lead mt-3">
+            Professional Real-Time Football Auction Platform
+        </p>
 
-    <p class="lead">
+        {% if not user.is_authenticated %}
 
-        Real-Time Football Auction System
+            <div class="mt-4">
 
-    </p>
+                <a
+                    href="{% url 'accounts:login' %}"
+                    class="btn btn-primary btn-lg me-2">
 
-    <hr>
+                    Login
 
-    <p>
+                </a>
 
-        Phase 1 Project Setup Completed Successfully.
+                <a
+                    href="{% url 'accounts:register' %}"
+                    class="btn btn-success btn-lg">
 
-    </p>
+                    Register
+
+                </a>
+
+            </div>
+
+        {% else %}
+
+            <div class="mt-4">
+
+                <a
+                    href="{% url 'dashboard:redirect' %}"
+                    class="btn btn-success btn-lg">
+
+                    Go to Dashboard
+
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </div>
 
