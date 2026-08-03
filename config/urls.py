@@ -19,6 +19,12 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path,include
 
+admin.site.site_header = "PES Live Auction Administration"
+
+admin.site.site_title = "PES Live Auction"
+
+admin.site.index_title = "Administration Dashboard"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -34,8 +40,3 @@ if settings.DEBUG:
         document_root = settings.MEDIA_ROOT,
     )
 
-admin.site.site_header = "PES Live Auction Administration"
-
-admin.site.site_title = "PES Live Auction"
-
-admin.site.index_title = "Administration Dashboard"

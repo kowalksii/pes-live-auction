@@ -6,6 +6,9 @@ app_name = "dashboard"
 
 urlpatterns = [
 
-    path("",views.dashboard_redirect,name="redirect"),
+    path("",views.DashboardRedirectView.as_view(),name="redirect"),
+    path("admin/",views.AdminDashboardView.as_view(), name="admin"),
+    path("participant/",views.ParticipantDashboardView.as_view(), name="participant"),
+    
 
 ]

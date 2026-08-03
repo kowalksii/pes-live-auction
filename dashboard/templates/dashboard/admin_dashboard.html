@@ -2,10 +2,20 @@
 
 {% block content %}
 
+<div class="text-center">
+
 <h2>
 
 Admin Dashboard
 
 </h2>
+
+<p>
+
+Welcome {{ request.user.username }}
+
+</p>
+
+</div>
 
 {% endblock %}

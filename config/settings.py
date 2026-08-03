@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     "channels",
 
+    "common",
     "core",
     "accounts",
     "participants",
