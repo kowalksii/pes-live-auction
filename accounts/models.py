@@ -1,13 +1,16 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from common.models import TimeStampedModel
+
 
 class UserRole(models.TextChoices):
     ADMIN = "ADMIN", "Admin"
     PARTICIPANT = "PARTICIPANT", "Participant"
 
 
-class User(AbstractUser):
+class User(AbstractUser, TimeStampedModel):
+
     role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
@@ -18,14 +21,8 @@ class User(AbstractUser):
 
     is_online = models.BooleanField(default=False)
 
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    updated_at = models.DateTimeField(auto_now=True)
-
     def save(self, *args, **kwargs):
-        """
-        Ensure superusers always have the ADMIN role and are approved.
-        """
+
         if self.is_superuser:
             self.role = UserRole.ADMIN
             self.is_approved = True
