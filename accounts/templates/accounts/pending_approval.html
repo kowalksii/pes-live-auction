@@ -28,9 +28,17 @@
                     Please contact the administrator if approval is taking longer than expected.
                 </p>
 
-                <a href="{% url 'accounts:logout' %}" class="btn btn-danger">
-                    Logout
-                </a>
+                <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+
+                    {% csrf_token %}
+
+                    <button type="submit" class="btn btn-danger">
+
+                        Logout
+
+                    </button>
+
+                </form>
 
             </div>
 

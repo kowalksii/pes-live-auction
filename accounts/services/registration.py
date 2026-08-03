@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from accounts.models import User
+from accounts.models import User, UserRole
 
 
 @transaction.atomic
@@ -15,7 +15,7 @@ def register_participant(form):
 
     user = form.save(commit=False)
 
-    user.role = User.UserRole.PARTICIPANT
+    user.role =UserRole.PARTICIPANT
     user.is_approved = False
 
     user.save()
