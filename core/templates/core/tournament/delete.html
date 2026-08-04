@@ -1,1 +1,54 @@
-<h1>Tournament DELETE</h1>
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <div class="card-body">
+
+        <h3>
+
+            Delete Tournament
+
+        </h3>
+
+        <p>
+
+            Are you sure you want to delete
+
+            <strong>
+
+                {{ object.name }}
+
+            </strong>
+
+            ?
+
+        </p>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <button
+                class="btn btn-danger">
+
+                Delete
+
+            </button>
+
+            <a
+                href="{% url 'core:tournament_detail' object.pk %}"
+                class="btn btn-secondary">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

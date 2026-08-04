@@ -1,1 +1,131 @@
-<h1>Tournament DETAIL</h1>
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-body">
+
+        <h2>
+
+            {{ tournament.name }}
+
+        </h2>
+
+        <hr>
+
+        <p>
+
+            {{ tournament.description }}
+
+        </p>
+
+        <p>
+
+            <strong>Status</strong>
+
+            {{ tournament.get_status_display }}
+
+        </p>
+
+        <p>
+
+            <strong>Total Coins</strong>
+
+            {{ tournament.total_coins }}
+
+        </p>
+
+        <p>
+
+            <strong>Maximum Participants</strong>
+
+            {{ tournament.max_participants }}
+
+        </p>
+
+        <p>
+
+            <strong>Members</strong>
+
+            {{ tournament.memberships.count }}
+
+        </p>
+
+        <hr>
+
+        {% if request.user.role == "ADMIN" %}
+
+        <a href="{% url 'core:tournament_update' tournament.pk %}" class="btn btn-warning">
+            Edit
+        </a>
+
+        <a href="{% url 'core:tournament_delete' tournament.pk %}" class="btn btn-danger">
+            Delete
+        </a>
+
+        {% else %}
+
+        {% if can_join %}
+
+        <form method="post" action="{% url 'participants:join_tournament' tournament.pk %}">
+
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-success">
+
+                Join Tournament
+
+            </button>
+
+        </form>
+
+        {% elif can_request_auction %}
+
+        <a href="#" class="btn btn-primary">
+
+            Request Auction Entry
+
+        </a>
+
+        {% elif has_pending_request %}
+
+        <button class="btn btn-warning" disabled>
+
+            Awaiting Admin Approval
+
+        </button>
+
+        {% elif is_participant %}
+
+        <button class="btn btn-success" disabled>
+
+            Auction Participant
+
+        </button>
+
+        {% elif is_member %}
+
+        <button class="btn btn-secondary" disabled>
+
+            Tournament Member
+
+        </button>
+
+        {% else %}
+
+        <button class="btn btn-secondary" disabled>
+
+            Registration Closed
+
+        </button>
+
+        {% endif %}
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -75,3 +75,23 @@ class TournamentMembershipService:
 
         membership.is_active = False
         membership.save(update_fields=["is_active"])
+
+    @staticmethod
+    def get_membership(user, tournament):
+        return (
+            TournamentMembership.objects.filter(
+                user=user,
+                tournament=tournament,
+                is_active=True,
+            )
+            .select_related("tournament", "user")
+            .first()
+        )
+
+    @staticmethod
+    def is_member(user, tournament):
+        return TournamentMembership.objects.filter(
+            user=user,
+            tournament=tournament,
+            is_active=True,
+        ).exists()

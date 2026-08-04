@@ -9,6 +9,7 @@ urlpatterns = [
     path("",views.DashboardRedirectView.as_view(),name="redirect"),
     path("admin/",views.AdminDashboardView.as_view(), name="admin"),
     path("participant/",views.ParticipantDashboardView.as_view(), name="participant"),
+    path("my-tournaments/",views.MyTournamentView.as_view(),name="my_tournaments"),
     
 
 ]

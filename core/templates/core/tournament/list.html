@@ -1,1 +1,123 @@
-<h1>Tournament List</h1>
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Tournaments</h2>
+
+    {% if request.user.role == "ADMIN" %}
+    <a href="{% url 'core:tournament_create' %}" class="btn btn-primary">
+
+        Create Tournament
+
+    </a>
+    {% endif %}
+
+</div>
+
+{% if tournaments %}
+
+<div class="row">
+
+    {% for tournament in tournaments %}
+
+    <div class="col-lg-6 mb-4">
+
+        <div class="card shadow-sm h-100">
+
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between">
+
+                    <h4>{{ tournament.name }}</h4>
+
+                    <span class="badge bg-primary">
+                        {{ tournament.get_status_display }}
+                    </span>
+
+                </div>
+
+                <hr>
+
+                <p>
+
+                    {{ tournament.description|default:"No description." }}
+
+                </p>
+
+                <p>
+
+                    <strong>Total Coins:</strong>
+
+                    {{ tournament.total_coins }}
+
+                </p>
+
+                <p>
+
+                    <strong>Maximum Participants:</strong>
+
+                    {{ tournament.max_participants }}
+
+                </p>
+
+                <p>
+
+                    <strong>Members:</strong>
+
+                    {{ tournament.memberships.count }}
+
+                </p>
+
+            </div>
+
+            <div class="card-footer bg-white d-flex gap-2">
+
+                <a href="{% url 'core:tournament_detail' tournament.pk %}" class="btn btn-outline-primary">
+
+                    View
+
+                </a>
+
+                {% if tournament.can_join %}
+
+                <form method="post" action="{% url 'participants:join_tournament' tournament.pk %}">
+
+                    {% csrf_token %}
+
+                    <button class="btn btn-success">
+                        Join
+                    </button>
+
+                </form>
+
+                {% elif tournament.is_member %}
+
+                <button class="btn btn-outline-success" disabled>
+                    Joined
+                </button>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-info">
+
+    No tournaments available.
+
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">
+    My Tournaments
+</h2>
+
+{% if memberships %}
+
+<div class="row">
+
+    {% for membership in memberships %}
+
+    <div class="col-md-6 mb-4">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h4>{{ membership.tournament.name }}</h4>
+
+                <p>
+                    {{ membership.tournament.get_status_display }}
+                </p>
+
+                <a href="{% url 'core:tournament_detail' membership.tournament.pk %}" class="btn btn-primary">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="alert alert-info">
+    You have not joined any tournaments yet.
+</div>
+
+{% endif %}
+
+{% endblock %}

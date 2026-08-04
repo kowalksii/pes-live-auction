@@ -98,4 +98,52 @@ class TournamentMembership(TimeStampedModel):
 
     def __str__(self):
         return f"{self.user.username} - {self.tournament.name}"
-    
+
+
+class AuctionJoinRequest(TimeStampedModel):
+    """
+    Request made by a tournament member to
+    participate in the live auction.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Pending"
+        APPROVED = "APPROVED", "Approved"
+        REJECTED = "REJECTED", "Rejected"
+        WITHDRAWN = "WITHDRAWN", "Withdrawn"
+
+    membership = models.ForeignKey(
+        TournamentMembership,
+        on_delete=models.CASCADE,
+        related_name="auction_request",
+    )
+
+    team_name = models.CharField(
+        max_length=100,
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+    )
+
+    rejection_reason = models.TextField(
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["created_at"]
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["membership", "team_name"],
+                name="unique_membership_request_history",
+            )
+        ]
+
+    def __str__(self):
+        return (
+            f"{self.membership.user.username} - "
+            f"{self.team_name} ({self.status})"
+        )
