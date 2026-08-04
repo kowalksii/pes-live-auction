@@ -3,6 +3,16 @@ from django.db import models
 
 from common.models import TimeStampedModel
 
+class AuctionRoomStatus(models.TextChoices):
+    CLOSED = "CLOSED", "Closed"
+    OPEN = "OPEN", "Open"
+
+
+class AuctionEngineStatus(models.TextChoices):
+    NOT_STARTED = "NOT_STARTED", "Not Started"
+    RUNNING = "RUNNING", "Running"
+    PAUSED = "PAUSED", "Paused"
+    FINISHED = "FINISHED", "Finished"
 
 class TournamentStatus(models.TextChoices):
     DRAFT = "DRAFT", "Draft"
@@ -10,6 +20,7 @@ class TournamentStatus(models.TextChoices):
     AUCTION = "AUCTION", "Live Auction"
     COMPLETED = "COMPLETED", "Completed"
     CANCELLED = "CANCELLED", "Cancelled"
+
 
 
 class Tournament(TimeStampedModel):
@@ -47,6 +58,23 @@ class Tournament(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         on_delete=models.PROTECT,
         related_name="created_tournaments",
+    )
+    auction_start_time = models.DateTimeField(
+    null=True,
+    blank=True,
+    help_text="Scheduled start time of the auction.",
+    )
+
+    auction_room_status = models.CharField(
+        max_length=20,
+        choices=AuctionRoomStatus.choices,
+        default=AuctionRoomStatus.CLOSED,
+    )
+
+    auction_engine_status = models.CharField(
+        max_length=20,
+        choices=AuctionEngineStatus.choices,
+        default=AuctionEngineStatus.NOT_STARTED,
     )
 
     class Meta:

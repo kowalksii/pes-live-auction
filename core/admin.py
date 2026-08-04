@@ -8,6 +8,9 @@ class TournamentAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "status",
+        "auction_room_status",
+        "auction_engine_status",
+        "auction_start_time",
         "max_participants",
         "total_coins",
         "created_by",
@@ -16,6 +19,8 @@ class TournamentAdmin(admin.ModelAdmin):
 
     list_filter = (
         "status",
+        "auction_room_status",
+        "auction_engine_status",
         "created_at",
     )
 
@@ -40,7 +45,22 @@ class TournamentAdmin(admin.ModelAdmin):
                     "name",
                     "description",
                     "status",
+                    "auction_start_time",
                 )
+            },
+        ),
+        (
+            "Auction Control",
+            {
+                "fields": (
+                    "auction_room_status",
+                    "auction_engine_status",
+                ),
+                "description": (
+                    "Development only. "
+                    "Later these values will be controlled "
+                    "through the application instead of the admin."
+                ),
             },
         ),
         (
