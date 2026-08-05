@@ -18,3 +18,13 @@ class ParticipantForm(
             "initial_coins",
             "is_active",
         )
+
+class AuctionJoinRequestForm(
+    BootstrapFormMixin,
+    forms.Form,
+):
+    team_name = forms.CharField(
+        max_length=100,
+        label="Auction Display Name",
+        help_text="This name will be shown during the live auction.",
+    )

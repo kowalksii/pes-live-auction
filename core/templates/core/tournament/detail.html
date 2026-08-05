@@ -200,7 +200,7 @@
                 {% elif can_request_auction %}
 
                     <a
-                        href="#"
+                        href="{% url 'participants:request_auction_entry' tournament.pk %}"
                         class="btn btn-primary">
 
                         Request Auction Entry

@@ -10,7 +10,7 @@ from participants.models import AuctionJoinRequest, Participant
 from participants.services.membership import TournamentMembershipService
 
 from .forms import TournamentForm
-from .models import Tournament, TournamentStatus
+from .models import Tournament, TournamentStatus, AuctionRoomStatus
 from .services.tournament_service import TournamentService
 
 
@@ -107,9 +107,11 @@ class TournamentDetailView(LoginRequiredMixin, DetailView):
                 ).exists()
 
                 can_request_auction = (
-                    not has_pending_request
+                    is_member
+                    and not has_pending_request
                     and not is_participant
-                    and tournament.status == TournamentStatus.REGISTRATION
+                    and tournament.status == TournamentStatus.AUCTION
+                    and tournament.auction_room_status == AuctionRoomStatus.OPEN
                 )
 
         context.update(
