@@ -6,121 +6,247 @@
 
     <div class="card-body">
 
-        <h2>
+        <div class="d-flex justify-content-between align-items-start">
 
-            {{ tournament.name }}
+            <div>
 
-        </h2>
+                <h2>{{ tournament.name }}</h2>
+
+                <p class="text-muted mb-0">
+                    {{ tournament.description }}
+                </p>
+
+            </div>
+
+            <span class="badge bg-primary fs-6">
+                {{ tournament.get_status_display }}
+            </span>
+
+        </div>
 
         <hr>
 
-        <p>
+        <div class="row">
 
-            {{ tournament.description }}
+            <div class="col-md-6">
 
-        </p>
+                <p>
+                    <strong>Total Coins</strong><br>
+                    {{ tournament.total_coins }}
+                </p>
 
-        <p>
+                <p>
+                    <strong>Maximum Participants</strong><br>
+                    {{ tournament.max_participants }}
+                </p>
 
-            <strong>Status</strong>
+            </div>
 
-            {{ tournament.get_status_display }}
+            <div class="col-md-6">
 
-        </p>
+                <p>
+                    <strong>Members</strong><br>
+                    {{ tournament.memberships.count }}
+                </p>
 
-        <p>
+                <p>
+                    <strong>Auction Starts</strong><br>
 
-            <strong>Total Coins</strong>
+                    {% if tournament.auction_start_time %}
 
-            {{ tournament.total_coins }}
+                        {{ tournament.auction_start_time }}
 
-        </p>
+                    {% else %}
 
-        <p>
+                        Not Scheduled
 
-            <strong>Maximum Participants</strong>
+                    {% endif %}
 
-            {{ tournament.max_participants }}
+                </p>
 
-        </p>
+            </div>
 
-        <p>
-
-            <strong>Members</strong>
-
-            {{ tournament.memberships.count }}
-
-        </p>
+        </div>
 
         <hr>
 
         {% if request.user.role == "ADMIN" %}
 
-        <a href="{% url 'core:tournament_update' tournament.pk %}" class="btn btn-warning">
-            Edit
-        </a>
+            <div class="mb-4">
 
-        <a href="{% url 'core:tournament_delete' tournament.pk %}" class="btn btn-danger">
-            Delete
-        </a>
+                <h5>Auction Controls</h5>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    {% if tournament.auction_room_status == "CLOSED" %}
+
+                        <form
+                            method="post"
+                            action="{% url 'core:open_room' tournament.pk %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-success">
+
+                                Open Auction Room
+
+                            </button>
+
+                        </form>
+
+                    {% else %}
+
+                        <form
+                            method="post"
+                            action="{% url 'core:close_room' tournament.pk %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-warning">
+
+                                Close Auction Room
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                    {% if tournament.auction_engine_status == "NOT_STARTED" %}
+
+                        <form
+                            method="post"
+                            action="{% url 'core:start_auction' tournament.pk %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-danger">
+
+                                Start Auction
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <a
+                href="{% url 'core:tournament_update' tournament.pk %}"
+                class="btn btn-primary">
+
+                Edit
+
+            </a>
+
+            <a
+                href="{% url 'core:tournament_delete' tournament.pk %}"
+                class="btn btn-outline-danger">
+
+                Delete
+
+            </a>
 
         {% else %}
 
-        {% if can_join %}
+            {% if can_join %}
 
-        <form method="post" action="{% url 'participants:join_tournament' tournament.pk %}">
+                <form
+                    method="post"
+                    action="{% url 'participants:join_tournament' tournament.pk %}">
 
-            {% csrf_token %}
+                    {% csrf_token %}
 
-            <button type="submit" class="btn btn-success">
+                    <button
+                        type="submit"
+                        class="btn btn-success">
 
-                Join Tournament
+                        Join Tournament
 
-            </button>
+                    </button>
 
-        </form>
+                </form>
 
-        {% elif can_request_auction %}
+            {% elif is_member %}
 
-        <a href="#" class="btn btn-primary">
+                {% if tournament.auction_room_status == "CLOSED" %}
 
-            Request Auction Entry
+                    <div class="alert alert-info">
 
-        </a>
+                        <h5>Auction Not Open Yet</h5>
 
-        {% elif has_pending_request %}
+                        <p class="mb-1">
 
-        <button class="btn btn-warning" disabled>
+                            You have successfully joined this tournament.
 
-            Awaiting Admin Approval
+                        </p>
 
-        </button>
+                        <p class="mb-0">
 
-        {% elif is_participant %}
+                            Please wait until the admin opens the auction room.
 
-        <button class="btn btn-success" disabled>
+                        </p>
 
-            Auction Participant
+                    </div>
 
-        </button>
+                {% elif can_request_auction %}
 
-        {% elif is_member %}
+                    <a
+                        href="#"
+                        class="btn btn-primary">
 
-        <button class="btn btn-secondary" disabled>
+                        Request Auction Entry
 
-            Tournament Member
+                    </a>
 
-        </button>
+                {% elif has_pending_request %}
 
-        {% else %}
+                    <div class="alert alert-warning">
 
-        <button class="btn btn-secondary" disabled>
+                        <h5>Waiting for Approval</h5>
 
-            Registration Closed
+                        <p class="mb-0">
 
-        </button>
+                            Your auction entry request has been sent.
+                            Please wait for the admin to approve it.
 
-        {% endif %}
+                        </p>
+
+                    </div>
+
+                {% elif is_participant %}
+
+                    <div class="alert alert-success">
+
+                        <h5>You are inside the Auction Room</h5>
+
+                        <p class="mb-0">
+
+                            Waiting for the admin to start the auction.
+
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            {% else %}
+
+                <div class="alert alert-secondary">
+
+                    Registration is currently closed.
+
+                </div>
+
+            {% endif %}
 
         {% endif %}
 

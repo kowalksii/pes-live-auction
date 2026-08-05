@@ -1,8 +1,8 @@
 from django.contrib import messages
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import (CreateView,DetailView,ListView,UpdateView,DeleteView,)
+from django.views.generic import (View,CreateView,DetailView,ListView,UpdateView,DeleteView,)
 
 from common.mixins import AdminRequiredMixin
 from accounts.models import UserRole
@@ -178,3 +178,110 @@ class TournamentDeleteView(AdminRequiredMixin, DeleteView):
         )
 
         return super().form_valid(form)
+
+
+class OpenAuctionRoomView(
+    AdminRequiredMixin,
+    View,
+):
+
+    def post(self, request, pk):
+
+        tournament = get_object_or_404(
+            Tournament,
+            pk=pk,
+        )
+
+        try:
+
+            TournamentService.open_auction_room(
+                tournament
+            )
+
+            messages.success(
+                request,
+                "Auction room opened."
+            )
+
+        except Exception as exc:
+
+            messages.error(
+                request,
+                str(exc),
+            )
+
+        return redirect(
+            "core:tournament_detail",
+            pk=pk,
+        )
+
+class CloseAuctionRoomView(
+    AdminRequiredMixin,
+    View,
+):
+
+    def post(self, request, pk):
+
+        tournament = get_object_or_404(
+            Tournament,
+            pk=pk,
+        )
+
+        try:
+
+            TournamentService.close_auction_room(
+                tournament
+            )
+
+            messages.success(
+                request,
+                "Auction room closed."
+            )
+
+        except Exception as exc:
+
+            messages.error(
+                request,
+                str(exc),
+            )
+
+        return redirect(
+            "core:tournament_detail",
+            pk=pk,
+        )
+
+class StartAuctionView(
+    AdminRequiredMixin,
+    View,
+):
+
+    def post(self, request, pk):
+
+        tournament = get_object_or_404(
+            Tournament,
+            pk=pk,
+        )
+
+        try:
+
+            TournamentService.start_auction(
+                tournament
+            )
+
+            messages.success(
+                request,
+                "Auction started."
+            )
+
+        except Exception as exc:
+
+            messages.error(
+                request,
+                str(exc),
+            )
+
+        return redirect(
+            "core:tournament_detail",
+            pk=pk,
+        )
+

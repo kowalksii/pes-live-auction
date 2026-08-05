@@ -36,4 +36,23 @@ urlpatterns = [
         views.TournamentDeleteView.as_view(),
         name="tournament_delete",
     ),
+
+    path(
+        "<int:pk>/room/open/",
+        views.OpenAuctionRoomView.as_view(),
+        name="open_room",
+    ),
+
+    path(
+        "<int:pk>/room/close/",
+        views.CloseAuctionRoomView.as_view(),
+        name="close_room",
+    ),
+
+    path(
+        "<int:pk>/auction/start/",
+        views.StartAuctionView.as_view(),
+        name="start_auction",
+    ),
+
 ]
