@@ -4,11 +4,11 @@ from django.views import View
 from django.core.exceptions import ValidationError
 from django.views.generic import FormView
 
-from common.mixins import ApprovedParticipantRequiredMixin
+from common.mixins import ApprovedParticipantRequiredMixin, AdminRequiredMixin
 
 from core.models import Tournament, AuctionRoomStatus, TournamentStatus
 from .forms import AuctionJoinRequestForm
-from .models import TournamentMembership
+from .models import TournamentMembership, AuctionJoinRequest
 from .services.auction_request import AuctionJoinRequestService
 
 from .services.membership import TournamentMembershipService
@@ -131,4 +131,107 @@ class RequestAuctionEntryView(FormView):
         return redirect(
             "core:tournament_detail",
             self.tournament.pk,
+        )
+
+class PendingAuctionRequestListView(
+    AdminRequiredMixin,
+    FormView,
+):
+    template_name = "participants/pending_requests.html"
+    form_class = AuctionJoinRequestForm
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+
+        tournament = get_object_or_404(
+            Tournament,
+            pk=self.kwargs["pk"],
+        )
+
+        context["tournament"] = tournament
+
+        context["requests"] = (
+            AuctionJoinRequest.objects
+            .filter(
+                membership__tournament=tournament,
+                status=AuctionJoinRequest.Status.PENDING,
+            )
+            .select_related(
+                "membership",
+                "membership__user",
+            )
+            .order_by("created_at")
+        )
+
+        return context
+
+class ApproveAuctionRequestView(
+    AdminRequiredMixin,
+    View,
+):
+
+    def post(self, request, pk):
+
+        request_obj = get_object_or_404(
+            AuctionJoinRequest,
+            pk=pk,
+        )
+
+        try:
+
+            AuctionJoinRequestService.approve_request(
+                request_obj
+            )
+
+            messages.success(
+                request,
+                "Participant approved successfully.",
+            )
+
+        except ValidationError as exc:
+
+            messages.error(
+                request,
+                exc.message,
+            )
+
+        return redirect(
+            "participants:pending_requests",
+            request_obj.membership.tournament.pk,
+        )
+
+class RejectAuctionRequestView(
+    AdminRequiredMixin,
+    View,
+):
+
+    def post(self, request, pk):
+
+        request_obj = get_object_or_404(
+            AuctionJoinRequest,
+            pk=pk,
+        )
+
+        try:
+
+            AuctionJoinRequestService.reject_request(
+                request_obj,
+            )
+
+            messages.success(
+                request,
+                "Request rejected.",
+            )
+
+        except ValidationError as exc:
+
+            messages.error(
+                request,
+                exc.message,
+            )
+
+        return redirect(
+            "participants:pending_requests",
+            request_obj.membership.tournament.pk,
         )

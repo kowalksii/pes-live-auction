@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from participants.models import (
     AuctionJoinRequest,
@@ -27,10 +28,66 @@ class AuctionJoinRequestService:
             team_name__iexact=team_name,
         ).exists():
             raise ValidationError(
-                "This team name is already in use."
+                "This display name is already in use."
             )
 
         return AuctionJoinRequest.objects.create(
             membership=membership,
             team_name=team_name.strip(),
         )
+
+    @staticmethod
+    @transaction.atomic
+    def approve_request(request_obj):
+
+        if request_obj.status != AuctionJoinRequest.Status.PENDING:
+            raise ValidationError(
+                "Only pending requests can be approved."
+            )
+
+        membership = request_obj.membership
+        tournament = membership.tournament
+
+        participant, created = Participant.objects.get_or_create(
+            tournament=tournament,
+            user=membership.user,
+            defaults={
+                "team_name": request_obj.team_name,
+                "initial_coins": tournament.total_coins,
+                "remaining_coins": tournament.total_coins,
+                "is_active": True,
+            },
+        )
+
+        request_obj.status = AuctionJoinRequest.Status.APPROVED
+
+        request_obj.save(
+            update_fields=[
+                "status",
+            ]
+        )
+
+        return participant
+
+    @staticmethod
+    def reject_request(
+        request_obj,
+        reason="",
+    ):
+
+        if request_obj.status != AuctionJoinRequest.Status.PENDING:
+            raise ValidationError(
+                "Only pending requests can be rejected."
+            )
+
+        request_obj.status = AuctionJoinRequest.Status.REJECTED
+        request_obj.rejection_reason = reason
+
+        request_obj.save(
+            update_fields=[
+                "status",
+                "rejection_reason",
+            ]
+        )
+
+        return request_obj
