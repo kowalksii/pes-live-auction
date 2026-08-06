@@ -38,6 +38,15 @@ class Participant(TimeStampedModel):
         default=True,
     )
 
+    is_connected = models.BooleanField(
+        default=False,
+    )
+
+    joined_room_at = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+
     class Meta:
         ordering = ["team_name"]
 

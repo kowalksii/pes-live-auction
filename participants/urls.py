@@ -32,4 +32,15 @@ urlpatterns = [
         views.RejectAuctionRequestView.as_view(),
         name="reject_request",
     ),
+    path(
+        "tournaments/<int:pk>/waiting-room/",
+        views.WaitingRoomView.as_view(),
+        name="waiting_room",
+    ),
+    path(
+        "tournaments/<int:pk>/admin-waiting-room/",
+        views.AdminWaitingRoomView.as_view(),
+        name="admin_waiting_room",
+    ),
+    
 ]

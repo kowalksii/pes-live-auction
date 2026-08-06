@@ -39,15 +39,15 @@ class AuctionJoinRequestService:
     @staticmethod
     @transaction.atomic
     def approve_request(request_obj):
-
+    
         if request_obj.status != AuctionJoinRequest.Status.PENDING:
             raise ValidationError(
                 "Only pending requests can be approved."
             )
-
+    
         membership = request_obj.membership
         tournament = membership.tournament
-
+    
         participant, created = Participant.objects.get_or_create(
             tournament=tournament,
             user=membership.user,
@@ -56,19 +56,40 @@ class AuctionJoinRequestService:
                 "initial_coins": tournament.total_coins,
                 "remaining_coins": tournament.total_coins,
                 "is_active": True,
+                "is_connected": False,
+                "joined_room_at": None,
             },
         )
-
+    
+        if not created:
+            participant.team_name = request_obj.team_name
+            participant.initial_coins = tournament.total_coins
+            participant.remaining_coins = tournament.total_coins
+            participant.is_active = True
+            participant.is_connected = False
+            participant.joined_room_at = None
+    
+            participant.save(
+                update_fields=[
+                    "team_name",
+                    "initial_coins",
+                    "remaining_coins",
+                    "is_active",
+                    "is_connected",
+                    "joined_room_at",
+                ]
+            )
+    
         request_obj.status = AuctionJoinRequest.Status.APPROVED
-
+    
         request_obj.save(
             update_fields=[
                 "status",
             ]
         )
-
+    
         return participant
-
+    
     @staticmethod
     def reject_request(
         request_obj,

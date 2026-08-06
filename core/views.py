@@ -63,6 +63,33 @@ class TournamentDetailView(LoginRequiredMixin, DetailView):
     template_name = "core/tournament/detail.html"
     context_object_name = "tournament"
 
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+
+        if (
+            request.user.is_authenticated
+            and request.user.role == UserRole.PARTICIPANT
+            and request.user.is_approved
+        ):
+
+            participant = Participant.objects.filter(
+                tournament=self.object,
+                user=request.user,
+            ).first()
+
+            if participant:
+
+                return redirect(
+                    "participants:waiting_room",
+                    pk=self.object.pk,
+                )
+
+        context = self.get_context_data(object=self.object)
+
+        return self.render_to_response(context)
+
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

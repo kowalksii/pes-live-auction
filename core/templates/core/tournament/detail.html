@@ -130,6 +130,12 @@
 
                 {% endif %}
 
+                <a href="{% url 'participants:admin_waiting_room' tournament.pk %}" class="btn btn-primary">
+
+                    Waiting Room
+
+                </a>
+
             </div>
 
         </div>
@@ -213,13 +219,23 @@
 
         <div class="alert alert-success">
 
-            <h5>You are inside the Auction Room</h5>
+            <h5>
 
-            <p class="mb-0">
+                Your auction entry has been approved.
 
-                Waiting for the admin to start the auction.
+            </h5>
+
+            <p>
+
+                You are ready to participate.
 
             </p>
+
+            <a href="{% url 'participants:waiting_room' tournament.pk %}" class="btn btn-success">
+
+                Enter Waiting Room
+
+            </a>
 
         </div>
 

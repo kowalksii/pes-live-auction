@@ -1,14 +1,14 @@
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.core.exceptions import ValidationError
 from django.views.generic import FormView
 
 from common.mixins import ApprovedParticipantRequiredMixin, AdminRequiredMixin
 
-from core.models import Tournament, AuctionRoomStatus, TournamentStatus
+from core.models import Tournament, AuctionRoomStatus, TournamentStatus, AuctionEngineStatus
 from .forms import AuctionJoinRequestForm
-from .models import TournamentMembership, AuctionJoinRequest
+from .models import TournamentMembership, AuctionJoinRequest, Participant
 from .services.auction_request import AuctionJoinRequestService
 
 from .services.membership import TournamentMembershipService
@@ -234,4 +234,95 @@ class RejectAuctionRequestView(
         return redirect(
             "participants:pending_requests",
             request_obj.membership.tournament.pk,
+        )
+
+class WaitingRoomView(
+    ApprovedParticipantRequiredMixin,
+    View,
+):
+
+    def get(self, request, pk):
+
+        tournament = get_object_or_404(
+            Tournament,
+            pk=pk,
+        )
+
+        participant = get_object_or_404(
+            Participant,
+            tournament=tournament,
+            user=request.user,
+        )
+
+        if (
+            tournament.auction_engine_status
+            == AuctionEngineStatus.RUNNING
+        ):
+            return redirect(
+                "auctions:live_room",
+                pk=tournament.pk,
+            )
+
+        approved_count = Participant.objects.filter(
+            tournament=tournament,
+            is_active=True,
+        ).count()
+
+        connected_count = Participant.objects.filter(
+            tournament=tournament,
+            is_connected=True,
+        ).count()
+
+        return render(
+            request,
+            "participants/waiting_room.html",
+            {
+                "tournament": tournament,
+                "participant": participant,
+                "approved_count": Participant.objects.filter(
+                    tournament=tournament,
+                    is_active=True,
+                ).count(),
+                "connected_count": Participant.objects.filter(
+                    tournament=tournament,
+                    is_connected=True,
+                ).count(),
+            },
+        )
+
+class AdminWaitingRoomView(
+    AdminRequiredMixin,
+    View,
+):
+
+    def get(self, request, pk):
+
+        tournament = get_object_or_404(
+            Tournament,
+            pk=pk,
+        )
+
+        participants = (
+            Participant.objects
+            .filter(
+                tournament=tournament,
+                is_active=True,
+            )
+            .select_related("user")
+            .order_by("team_name")
+        )
+
+        connected_count = participants.filter(
+            is_connected=True,
+        ).count()
+
+        return render(
+            request,
+            "participants/admin_waiting_room.html",
+            {
+                "tournament": tournament,
+                "participants": participants,
+                "connected_count": connected_count,
+                "total_count": participants.count(),
+            },
         )
