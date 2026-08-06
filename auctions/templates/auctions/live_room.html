@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}
+Live Auction
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-body">
+
+            <h2>
+                {{ tournament.name }}
+            </h2>
+
+            <hr>
+
+            <h5>
+                Welcome {{ participant.team_name }}
+            </h5>
+
+            <p class="text-muted">
+                Live auction infrastructure is ready.
+            </p>
+
+            <div class="alert alert-success">
+
+                Waiting for real-time auction engine...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
