@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card shadow">
+
+            <div class="card-header">
+
+                <h3 class="mb-0">
+                    Auction Waiting Room
+                </h3>
+
+            </div>
+
+            <div class="card-body">
+
+                <h4>
+                    {{ tournament.name }}
+                </h4>
+
+                <hr>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <div class="card border-primary mb-3">
+
+                            <div class="card-body">
+
+                                <h6 class="text-muted">
+                                    Display Name
+                                </h6>
+
+                                <h4>
+                                    {{ participant.team_name }}
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="card border-success mb-3">
+
+                            <div class="card-body">
+
+                                <h6 class="text-muted">
+                                    Available Coins
+                                </h6>
+
+                                <h4>
+                                    {{ participant.remaining_coins }}
+                                </h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <div class="card mb-3">
+
+                            <div class="card-body text-center">
+
+                                <h6 class="text-muted">
+                                    Approved Participants
+                                </h6>
+
+                                <h3>
+                                    {{ approved_count }}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="card mb-3">
+
+                            <div class="card-body text-center">
+
+                                <h6 class="text-muted">
+                                    Connected Participants
+                                </h6>
+
+                                <h3>
+                                    {{ connected_count }}
+                                </h3>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="alert alert-info">
+
+                    <h5>
+                        Waiting for Auction
+                    </h5>
+
+                    <p class="mb-2">
+
+                        Your auction entry has been approved successfully.
+
+                    </p>
+
+                    <p class="mb-2">
+
+                        Please remain on this page.
+
+                    </p>
+
+                    <p class="mb-0">
+
+                        The live auction will begin automatically when the administrator starts it.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+setInterval(function () {
+
+    location.reload();
+
+}, 5000);
+
+</script>
+
+{% endblock %}

@@ -2,19 +2,89 @@
 
 {% block content %}
 
-<div class="text-center">
-
-<h2>
-
-Participant Dashboard
-
+<h2 class="mb-4">
+    Participant Dashboard
 </h2>
 
-<p>
+<div class="row">
 
-Welcome {{ request.user.username }}
+    <div class="col-md-4 mb-4">
 
-</p>
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>Browse Tournaments</h5>
+
+                <p>
+                    View tournaments currently available.
+                </p>
+
+                <a
+                    href="{% url 'core:tournament_list' %}"
+                    class="btn btn-primary">
+
+                    Browse
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>My Tournaments</h5>
+
+                <p>
+                    View tournaments you have joined.
+                </p>
+
+                <a
+                    href="{% url 'dashboard:my_tournaments' %}"
+                    class="btn btn-success">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>Live Auction</h5>
+
+                <p>
+                    Participate in the auction once approved.
+                </p>
+
+                <button
+                    class="btn btn-secondary"
+                    disabled>
+
+                    Coming Soon
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

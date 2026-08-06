@@ -2,19 +2,89 @@
 
 {% block content %}
 
-<div class="text-center">
-
-<h2>
-
-Admin Dashboard
-
+<h2 class="mb-4">
+    Admin Dashboard
 </h2>
 
-<p>
+<div class="row">
 
-Welcome {{ request.user.username }}
+    <div class="col-md-4 mb-4">
 
-</p>
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>Tournaments</h5>
+
+                <p>
+                    Create and manage tournaments.
+                </p>
+
+                <a
+                    href="{% url 'core:tournament_list' %}"
+                    class="btn btn-primary">
+
+                    Open
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>Auction Requests</h5>
+
+                <p>
+                    Approve or reject auction requests.
+                </p>
+
+                <button
+                    class="btn btn-secondary"
+                    disabled>
+
+                    Coming Soon
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4 mb-4">
+
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <h5>Live Auction</h5>
+
+                <p>
+                    Start and monitor the live auction.
+                </p>
+
+                <button
+                    class="btn btn-secondary"
+                    disabled>
+
+                    Coming Soon
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

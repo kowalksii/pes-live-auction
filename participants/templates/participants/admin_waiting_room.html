@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card shadow">
+
+    <div class="card-header">
+
+        <h3>
+
+            Auction Waiting Room
+
+        </h3>
+
+    </div>
+
+    <div class="card-body">
+
+        <h5>
+
+            {{ tournament.name }}
+
+        </h5>
+
+        <hr>
+
+        <div class="row mb-4">
+
+            <div class="col-md-6">
+
+                <div class="alert alert-primary">
+
+                    Connected
+
+                    <h3>
+
+                        {{ connected_count }}/{{ total_count }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="alert alert-success">
+
+                    Room Status
+
+                    <h3>
+
+                        {{ tournament.get_auction_room_status_display }}
+
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <table class="table table-hover">
+
+            <thead>
+
+                <tr>
+
+                    <th>Display Name</th>
+
+                    <th>User</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for participant in participants %}
+
+                <tr>
+
+                    <td>
+
+                        {{ participant.team_name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ participant.user.username }}
+
+                    </td>
+
+                    <td>
+
+                        {% if participant.is_connected %}
+
+                        <span class="badge bg-success">
+
+                            Connected
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+
+                            Waiting
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="3">
+
+                        No approved participants.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <hr>
+
+        {% if tournament.auction_engine_status == "NOT_STARTED" %}
+
+        <form
+            method="post"
+            action="{% url 'core:start_auction' tournament.pk %}">
+
+            {% csrf_token %}
+
+            <button
+                class="btn btn-danger">
+
+                Start Auction
+
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
