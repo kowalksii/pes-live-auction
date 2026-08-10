@@ -80,7 +80,7 @@
                                     Approved Participants
                                 </h6>
 
-                                <h3>
+                                <h3 id="approved-count">
                                     {{ approved_count }}
                                 </h3>
 
@@ -100,7 +100,7 @@
                                     Connected Participants
                                 </h6>
 
-                                <h3>
+                                <h3 id="connected-count">
                                     {{ connected_count }}
                                 </h3>
 
@@ -148,11 +148,37 @@
 
 <script>
 
-setInterval(function () {
+const tournamentId = "{{ tournament.id }}";
 
-    location.reload();
+const protocol =
+    window.location.protocol === "https:"
+        ? "wss"
+        : "ws";
 
-}, 5000);
+const socket = new WebSocket(
+    `${protocol}://${window.location.host}/ws/waiting-room/${tournamentId}/`
+);
+
+socket.onmessage = function(event){
+
+    const data = JSON.parse(event.data);
+
+    if(data.type === "participant_status"){
+
+        document.getElementById("approved-count").textContent =
+            data.approved_count;
+
+        document.getElementById("connected-count").textContent =
+            data.connected_count;
+    }
+
+};
+
+socket.onclose = function(){
+
+    console.log("Waiting room websocket disconnected.");
+
+};
 
 </script>
 

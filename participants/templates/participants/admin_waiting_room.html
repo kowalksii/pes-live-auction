@@ -32,7 +32,7 @@
 
                     Connected
 
-                    <h3>
+                    <h3 id="connected-counter">
 
                         {{ connected_count }}/{{ total_count }}
 
@@ -140,14 +140,11 @@
 
         {% if tournament.auction_engine_status == "NOT_STARTED" %}
 
-        <form
-            method="post"
-            action="{% url 'core:start_auction' tournament.pk %}">
+        <form method="post" action="{% url 'core:start_auction' tournament.pk %}">
 
             {% csrf_token %}
 
-            <button
-                class="btn btn-danger">
+            <button class="btn btn-danger">
 
                 Start Auction
 
@@ -160,5 +157,39 @@
     </div>
 
 </div>
+
+<script>
+
+    const tournamentId = "{{ tournament.id }}";
+
+    const protocol =
+        window.location.protocol === "https:"
+            ? "wss"
+            : "ws";
+
+    const socket = new WebSocket(
+        `${protocol}://${window.location.host}/ws/waiting-room/${tournamentId}/`
+    );
+
+    socket.onmessage = function (event) {
+
+        const data = JSON.parse(event.data);
+
+        if (data.type === "participant_status") {
+
+            document.getElementById("connected-counter").textContent =
+                `${data.connected_count}/${data.approved_count}`;
+
+        }
+
+    };
+
+    socket.onclose = function () {
+
+        console.log("Admin waiting room websocket disconnected.");
+
+    };
+
+</script>
 
 {% endblock %}

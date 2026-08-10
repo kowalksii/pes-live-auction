@@ -40,6 +40,8 @@ class WaitingRoomConsumer(AsyncJsonWebsocketConsumer):
             },
         )
 
+        await self.participant_connected({})
+
     async def disconnect(self, close_code):
 
         participant_exists = await self.participant_exists()
